@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Enums\Enums\TransactionEnums;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Transaction\DepositRequest;
 use App\Http\Resources\TransactionsResource;
 use App\Http\Services\User\TransactionsService;
 use App\Models\Transaction;
@@ -68,7 +69,6 @@ class TransactionsController extends Controller
         $page = $request->query('page');
 
         $deposits = Transaction::query()
-        ->where('user_id', auth()->id())
         ->with('user')
         ->latest()
         ->paginate($perPage, ['*'], 'page');
@@ -129,7 +129,6 @@ class TransactionsController extends Controller
 
         $deposits = Transaction::query()
         ->where('transaction_type', TransactionEnums::DEPOSIT)
-        ->where('user_id', auth()->id())
         ->with('user')
         ->latest()
         ->paginate($perPage, ['*'], 'page');
@@ -138,5 +137,76 @@ class TransactionsController extends Controller
             'success' => true,
             'message' => 'Fetch Success',
         ]);
+    }
+
+    /**
+     *
+     * @OA\Post(
+     *      path="/transaction/deposit",
+     *      operationId="depositTransaction",
+     *      tags={"TRANSACTION"},
+     *      summary="insert a new deposit transaction",
+     *      description="insert a new deposit transaction",
+     *      security={{"bearer_token":{}}},
+     *
+     *       @OA\RequestBody(
+     *          required=true,
+     *          description="enter inputs",
+     *            @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *           @OA\Schema(
+     *                   @OA\Property(
+     *                      property="user_id",
+     *                      description="deposit account user id",
+     *                      type="integer",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="amount",
+     *                      description="deposit amount",
+     *                      type="integer",
+     *                   ),
+     *
+     *                 ),
+     *             ),
+     *         ),
+     *
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+     *        )
+     *     )
+     *
+     */
+    public function depositTransaction(DepositRequest $request){
+        try {
+            $plan = $this->transactionsService->createDeposit($request);
+
+            return TransactionsResource::make($plan->load('user'))->additional([
+                'success' => true,
+                'message' => 'Insert Success',
+            ]);
+        } catch (\Throwable $th) {
+            return $this->sendError($th->getMessage(), [], 500);
+        }
     }
 }

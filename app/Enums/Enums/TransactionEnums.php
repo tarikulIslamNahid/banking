@@ -7,4 +7,6 @@ enum TransactionEnums:string
     case DEPOSIT = 'deposit';
     case WITHDRAWAL = 'withdrawal';
 
+    
+
 }

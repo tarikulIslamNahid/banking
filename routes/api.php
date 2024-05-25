@@ -22,5 +22,6 @@ Route::group(['middleware' => 'auth:sanctum','prefix'=>'transaction'], function 
 
     Route::get('/', [TransactionsController::class, 'getTransactions']);
     Route::get('deposit', [TransactionsController::class, 'getDepositTransactions']);
+    Route::post('deposit', [TransactionsController::class, 'depositTransaction']);
 });
 
