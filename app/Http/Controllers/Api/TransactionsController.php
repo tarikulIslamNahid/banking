@@ -68,6 +68,7 @@ class TransactionsController extends Controller
         $page = $request->query('page');
 
         $deposits = Transaction::query()
+        ->where('user_id', auth()->id())
         ->with('user')
         ->latest()
         ->paginate($perPage, ['*'], 'page');
@@ -128,6 +129,7 @@ class TransactionsController extends Controller
 
         $deposits = Transaction::query()
         ->where('transaction_type', TransactionEnums::DEPOSIT)
+        ->where('user_id', auth()->id())
         ->with('user')
         ->latest()
         ->paginate($perPage, ['*'], 'page');
