@@ -269,4 +269,73 @@ class TransactionsController extends Controller
             return $this->sendError($th->getMessage(), [], 500);
         }
     }
+    /**
+     *
+     * @OA\Post(
+     *      path="/transaction/withdrawal",
+     *      operationId="withdrawalTransaction",
+     *      tags={"TRANSACTION"},
+     *      summary="insert a new withdrawal transaction",
+     *      description="insert a new withdrawal transaction",
+     *      security={{"bearer_token":{}}},
+     *
+     *       @OA\RequestBody(
+     *          required=true,
+     *          description="enter inputs",
+     *            @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *           @OA\Schema(
+     *                   @OA\Property(
+     *                      property="user_id",
+     *                      description="withdrawal account user id",
+     *                      type="integer",
+     *                   ),
+     *                   @OA\Property(
+     *                      property="amount",
+     *                      description="withdrawal amount",
+     *                      type="integer",
+     *                   ),
+     *
+     *                 ),
+     *             ),
+     *         ),
+     *
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Successful Insert operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+     *        )
+     *     )
+     *
+     */
+    public function withdrawalTransaction(DepositRequest $request){
+        try {
+            return $plan = $this->transactionsService->createWithdrawal($request);
+            return TransactionsResource::make($plan->load('user'))->additional([
+                'success' => true,
+                'message' => 'Insert Success',
+            ]);
+        } catch (\Throwable $th) {
+            return $this->sendError($th->getMessage(), [], 500);
+        }
+    }
 }
