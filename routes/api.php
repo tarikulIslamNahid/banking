@@ -20,6 +20,7 @@ Route::group(['prefix' => 'auth'], function (){
 
 Route::group(['middleware' => 'auth:sanctum','prefix'=>'transaction'], function (){
 
+    Route::get('/', [TransactionsController::class, 'getTransactions']);
     Route::get('deposit', [TransactionsController::class, 'getDepositTransactions']);
 });
 
