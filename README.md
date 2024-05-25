@@ -22,5 +22,8 @@ APP_BASE_URL = 127.0.0.1:8000
 # setup the database credentials and migrate database
 php artisan migrate
 
+# run the application
+php artisan serve
+
 # swagger api documentation url
 ${APP_BASE_URL}/api/documentation
