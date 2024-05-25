@@ -39,7 +39,12 @@ class TransactionsService
 
     public function createWithdrawal(Request $request){
         DB::beginTransaction();
+
         $user = User::find($request->user_id);
+
+        if($user->balance < $request->amount){
+            throw new \Exception('Insufficient balance');
+        }
         try {
             $transaction = new Transaction;
             $transaction->user_id = $request->user_id;
