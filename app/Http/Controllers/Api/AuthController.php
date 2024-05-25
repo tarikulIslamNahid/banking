@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\AuthLoginRequest;
 use App\Http\Requests\Auth\AuthRegisterRequest;
+use App\Http\Resources\UserResource;
 use App\Http\Services\User\AuthService;
 
 class AuthController extends Controller
@@ -95,6 +97,67 @@ class AuthController extends Controller
     public function register(AuthRegisterRequest $request){
         $data = $this->authService->register($request);
         return $this->sendResponse($data, 'User registered successfully');
+    }
+
+    /**
+     *
+     * @OA\Post(
+     *      path="/auth/login",
+     *      operationId="login",
+     *      tags={"AUTH"},
+     *      summary="Login to the Application",
+     *      description="login to the application",
+     *       @OA\RequestBody(
+     *          required=true,
+     *          description="Pass user credentials",
+     *           @OA\MediaType(
+     *              mediaType="multipart/form-data",
+     *           @OA\Schema(
+     *                   @OA\Property(
+     *                      property="email",
+     *                      description="email",
+     *                      type="string",
+     *                   ),
+     *                  @OA\Property(
+     *                      property="password",
+     *                      description="password",
+     *                      type="string",
+     *                   ),
+     *               ),
+     *               ),
+     *
+     *         ),
+     *
+     *
+     *
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *          @OA\JsonContent()
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      ),
+     *      @OA\Response(
+     *          response=422,
+     *          description="Unprocessable Entity",
+     *
+     *          )
+     *        )
+     *     )
+     *
+     */
+    public function login(AuthLoginRequest $request){
+        $data = $this->authService->login($request);
+        return UserResource::make($data['user'])
+        ->token($data['token'])
+        ->success(true)
+        ->message("Login Success");
     }
 
 }
