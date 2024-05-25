@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\TransactionsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,3 +17,9 @@ Route::group(['prefix' => 'auth'], function (){
         Route::get('/logout', [AuthController::class, 'logout']);
     });
 });
+
+Route::group(['middleware' => 'auth:sanctum','prefix'=>'transaction'], function (){
+
+    Route::get('deposit', [TransactionsController::class, 'getDepositTransactions']);
+});
+

@@ -2,13 +2,9 @@
 
 namespace App\Http\Services\User;
 
+use Illuminate\Http\Request;
+
 class TransactionsService
 {
-    /**
-     * Create a new class instance.
-     */
-    public function __construct()
-    {
-        //
-    }
+
 }
