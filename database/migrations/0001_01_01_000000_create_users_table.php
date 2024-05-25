@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->enum('account_type', ['business', 'individual']);
-            $table->double('balance');
+            $table->double('balance')->default(0);
             $table->string('email')->unique();
             $table->string('password');
             $table->rememberToken();
