@@ -138,6 +138,34 @@
                     }
                 }
             }
+        },
+        "/auth/logout": {
+            "get": {
+                "tags": [
+                    "AUTH"
+                ],
+                "summary": "Logout From The Application",
+                "description": "Logout user and invalidate token",
+                "operationId": "logout",
+                "responses": {
+                    "204": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Returns when user is not authenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
+            }
         }
     },
     "components": {

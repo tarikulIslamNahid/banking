@@ -13,7 +13,6 @@ Route::group(['prefix' => 'auth'], function (){
 
     Route::group(['middleware' => 'auth:sanctum'], function (){
 
-        Route::post('/logout', [AuthController::class, 'logout']);
-        Route::post('checkToken', [AuthController::class, 'checkToken']);
+        Route::get('/logout', [AuthController::class, 'logout']);
     });
 });

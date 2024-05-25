@@ -7,6 +7,9 @@ use App\Http\Requests\Auth\AuthLoginRequest;
 use App\Http\Requests\Auth\AuthRegisterRequest;
 use App\Http\Resources\UserResource;
 use App\Http\Services\User\AuthService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -159,5 +162,33 @@ class AuthController extends Controller
         ->success(true)
         ->message("Login Success");
     }
+
+    /**
+    * @OA\Get(
+    *      path="/auth/logout",
+    *      summary="Logout From The Application",
+    *      description="Logout user and invalidate token",
+    *      operationId="logout",
+    *      tags={"AUTH"},
+    *      security={{"bearer_token":{}}},
+    *      @OA\Response(
+    *          response=204,
+    *          description="Successful operation",
+    *          @OA\JsonContent()
+    *       ),
+    *      @OA\Response(
+    *          response=401,
+    *          description="Returns when user is not authenticated",
+    *
+    *  )
+    * )
+    */
+   public function logout()
+   {
+    Auth::user()->tokens->each(function ($token, $key) {
+        $token->delete();
+    });
+    return new JsonResponse('Logout successful', 200);
+   }
 
 }
